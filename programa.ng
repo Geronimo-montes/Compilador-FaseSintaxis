@@ -1,0 +1,8 @@
+para x := 1 hasta 10 hacer
+  iniciopara
+    si (x > 1) entonces
+      iniciosi
+        leer(x);
+        escribir("el valor de x es " + x);
+      finsi
+  finpara
