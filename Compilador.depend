@@ -314,7 +314,7 @@
 	"EstructuraToken.h"
 	"FaseSintaxis.h"
 
-1607212082 c:\users\geron\documents\01.uas\semestre vii\01.software sistemas\04.compilador\compilador-sintaxis\fasesintaxis.h
+1607225259 c:\users\geron\documents\01.uas\semestre vii\01.software sistemas\04.compilador\compilador-sintaxis\fasesintaxis.h
 
 1607137530 c:\users\geron\documents\01.uas\semestre vii\01.software sistemas\04.compilador\compilador-sintaxis\palabrareservada.h
 
@@ -329,7 +329,7 @@
 	<stdlib.h>
 	"Identificador.h"
 
-1607218546 source:c:\users\geron\documents\01.uas\semestre vii\01.software sistemas\04.compilador\compilador-sintaxis\main.c
+1607225296 source:c:\users\geron\documents\01.uas\semestre vii\01.software sistemas\04.compilador\compilador-sintaxis\main.c
 	<stdio.h>
 	<conio.h>
 	<stdlib.h>
@@ -352,4 +352,8 @@
 	<stdbool.h>
 	<string.h>
 	"PalabraReservada.h"
+
+1607224883 source:c:\users\geron\documents\01.uas\semestre vii\01.software sistemas\04.compilador\compilador-sintaxis\fasesintaxis.c
+	"EstructuraToken.h"
+	"FaseSintaxis.h"
 

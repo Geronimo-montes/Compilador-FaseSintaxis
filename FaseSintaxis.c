@@ -179,7 +179,6 @@ void SintaxisIf(struct nodo *reco, int edo)
 {
   if(reco != NULL) {
     //printf("\nEstado #%2d:\nLexema:%s\nTipo Token:%s\n", edo, reco->token.lexema, tipo_Token[reco->token.tipo]);
-
     switch(edo) {
       case 1:/*si*/
         if( (strcmp(reco->token.lexema, "si") == 0) &&
@@ -228,7 +227,7 @@ void SintaxisIf(struct nodo *reco, int edo)
             (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
           SintaxisIf(reco->siguiente,8);
         else
-          SintaxisIf(reco->siguiente, edo);
+          printf("Sintaxis IF Correcta..!\n");
         break;
       case 8:/*iniciosino*/
         if( (strcmp(reco->token.lexema, "iniciosino") == 0) &&
@@ -240,7 +239,7 @@ void SintaxisIf(struct nodo *reco, int edo)
       case 9:/*finsino*/
         if( (strcmp(reco->token.lexema, "finsino") == 0) &&
             (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
-          printf("Sintaxis IF Correcta..!\n");
+          printf("Sintaxis IF-ELSE Correcta..!\n");
         else
         //Intrucciones del boque flase
           SintaxisIf(reco->siguiente, edo);
@@ -250,7 +249,193 @@ void SintaxisIf(struct nodo *reco, int edo)
         break;
     }
   SintaxisIf(reco->siguiente, 1);
-  }else if (edo == 7) {
-    printf("Sintaxis IF Correcta..!\n");
+  }
+}
+
+void SintaxisProgram(struct nodo *reco, int edo)
+{
+  if(reco != NULL) {
+    //printf("\nEstado #%2d:\nLexema:%s\nTipo Token:%s\n", edo, reco->token.lexema, tipo_Token[reco->token.tipo]);
+    switch(edo) {
+      case 1:/*var*/
+        if( (strcmp(reco->token.lexema, "var") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisProgram(reco->siguiente, 2);
+        break;
+      case 2:/*const*/
+        if( (strcmp(reco->token.lexema,"const") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisProgram(reco->siguiente, 3);
+        else
+          SintaxisProgram(reco->siguiente, edo);
+        break;
+      case 3:/*incio*/
+        if( (strcmp(reco->token.lexema,"inicio") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisProgram(reco->siguiente, 4);
+        else
+        //Aqui entra exp, no la valida ya que corresponde a otra sintaxis distinta
+          SintaxisProgram(reco->siguiente, edo);
+        break;
+      case 4:/*fin*/
+        if( (strcmp(reco->token.lexema, "fin") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          printf("Sintaxis Program Correcta..!\n");
+        else
+          SintaxisProgram(reco->siguiente, edo);
+        break;
+      default:
+        SintaxisProgram(reco->siguiente, edo);
+        break;
+    }
+  SintaxisProgram(reco->siguiente, 1);
+  }
+}
+
+void SintaxisVar(struct nodo *reco, int edo)
+{
+  if(reco != NULL) {
+    //printf("\nEstado #%2d:\nLexema:%s\nTipo Token:%s\n", edo, reco->token.lexema, tipo_Token[reco->token.tipo]);
+    switch(edo) {
+      case 1:/*var*/
+        if( (strcmp(reco->token.lexema, "var") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisVar(reco->siguiente, 2);
+        break;
+      case 2:/*tipoVar*/
+        if(((strcmp(reco->token.lexema,"cadena") == 0) ||
+            (strcmp(reco->token.lexema,"entero") == 0) ||
+            (strcmp(reco->token.lexema,"real") == 0) ||
+            (strcmp(reco->token.lexema,"booleano") == 0) ) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisVar(reco->siguiente, 3);
+        break;
+      case 3:/* : */
+        if( (strcmp(reco->token.lexema,":") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisVar(reco->siguiente, 4);
+        break;
+      case 4:/* id */
+        if(strcmp(tipo_Token[reco->token.tipo], "Id") == 0)
+          SintaxisVar(reco->siguiente, 5);
+        break;
+      case 5:/* asignacion */
+        if( (strcmp(reco->token.lexema,";") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) ) {
+          printf("Sintaxis Declaracion Variable Correcta...!\n");
+          SintaxisVar(reco->siguiente, 2);
+        } else if( (strcmp(reco->token.lexema,":=") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisVar(reco->siguiente, 6);
+        break;  
+      case 6:/*Numero || Comilla*/
+        if (strcmp(tipo_Token[reco->token.tipo], "Num") == 0)
+          SintaxisVar(reco->siguiente, 9);
+        else if( (strcmp(reco->token.lexema,"\"") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisVar(reco->siguiente, 7);
+        else
+          printf("Sintaxis incorrecta, se esperaba un Id o abertura de comillas \" \n");
+        break;
+      case 7:/*Cadena*/
+        if (strcmp(tipo_Token[reco->token.tipo], "Cadena")== 0)
+          SintaxisVar(reco->siguiente, 8);
+        else if(strcmp(reco->token.lexema, "\"") == 0)
+          SintaxisVar(reco->siguiente, 6);
+        else
+          printf("Sintaxis incorrecta, se esperaba una cadena \n");
+        break;
+      case 8:/*Comilla*/
+        if( (strcmp(reco->token.lexema,"\"") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisVar(reco->siguiente, 9);
+        else
+          printf("Sintaxis incorrecta, se esperaba un cierre de comillas \n");
+        break;
+      case 9:/*Punto Coma*/
+        if( (strcmp(reco->token.lexema,";") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) ) {
+          printf("Sintaxis Declaracion Variable Correcta...!\n");
+          SintaxisVar(reco->siguiente, 2);
+        } else
+          printf("Sintaxis incorrecta, se esperaba un cierre de comillas \n");
+        break;
+      default:
+        SintaxisVar(reco->siguiente, edo);
+        break;
+    }
+  SintaxisVar(reco->siguiente, 1);
+  }
+}
+
+void SintaxisConst(struct nodo *reco, int edo)
+{
+  if(reco != NULL) {
+    //printf("\nEstado #%2d:\nLexema:%s\nTipo Token:%s\n", edo, reco->token.lexema, tipo_Token[reco->token.tipo]);
+    switch(edo) {
+      case 1:/*canst*/
+        if( (strcmp(reco->token.lexema, "const") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisConst(reco->siguiente, 2);
+        break;
+      case 2:/*tipoConst*/
+        if(((strcmp(reco->token.lexema,"cadena") == 0) ||
+            (strcmp(reco->token.lexema,"entero") == 0) ||
+            (strcmp(reco->token.lexema,"real") == 0) ||
+            (strcmp(reco->token.lexema,"booleano") == 0) ) &&
+            (strcmp(tipo_Token[reco->token.tipo], "PalRes") == 0) )
+          SintaxisConst(reco->siguiente, 3);
+        break;
+      case 3:/* : */
+        if( (strcmp(reco->token.lexema,":") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisConst(reco->siguiente, 4);
+        break;
+      case 4:/* id */
+        if(strcmp(tipo_Token[reco->token.tipo], "Id") == 0)
+          SintaxisConst(reco->siguiente, 5);
+        break;
+      case 5:/* asignacion */
+        if( (strcmp(reco->token.lexema,":=") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisConst(reco->siguiente, 6);
+        break;  
+      case 6:/*Numero || Comilla*/
+        if (strcmp(tipo_Token[reco->token.tipo], "Num") == 0)
+          SintaxisConst(reco->siguiente, 9);
+        else if( (strcmp(reco->token.lexema,"\"") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisConst(reco->siguiente, 7);
+        else
+          printf("Sintaxis incorrecta, se esperaba un Id o abertura de comillas \" \n");
+        break;
+      case 7:/*Cadena*/
+        if (strcmp(tipo_Token[reco->token.tipo], "Cadena")== 0)
+          SintaxisConst(reco->siguiente, 8);
+        else if(strcmp(reco->token.lexema, "\"") == 0)
+          SintaxisConst(reco->siguiente, 6);
+        else
+          printf("Sintaxis incorrecta, se esperaba una cadena \n");
+        break;
+      case 8:/*Comilla*/
+        if( (strcmp(reco->token.lexema,"\"") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) )
+          SintaxisConst(reco->siguiente, 9);
+        else
+          printf("Sintaxis incorrecta, se esperaba un cierre de comillas \n");
+        break;
+      case 9:/*Punto Coma*/
+        if( (strcmp(reco->token.lexema,";") == 0) &&
+            (strcmp(tipo_Token[reco->token.tipo], "SimEsp") == 0) ) {
+          printf("Sintaxis Declaracion Constante Correcta...!\n");
+          SintaxisConst(reco->siguiente, 2);
+        } else
+          printf("Sintaxis incorrecta, se esperaba un cierre de comillas \n");
+        break;
+      default:
+        SintaxisConst(reco->siguiente, edo);
+        break;
+    }
+  SintaxisConst(reco->siguiente, 1);
   }
 }

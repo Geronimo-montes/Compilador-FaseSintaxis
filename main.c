@@ -140,6 +140,9 @@ int main()
   printf("  Nombre\t\tTipo\t\tLexema\t\tValor\n\n");
   imprimirPre(raiz);
 
+  SintaxisProgram(raiz, 1);
+  SintaxisVar(raiz, 1);
+  SintaxisConst(raiz, 1);
   SintaxisIf(raiz, 1);
   SintaxisEscribir(raiz, 1);
   SintaxisLeer(raiz, 1);
